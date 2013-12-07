@@ -1,0 +1,367 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>MappedDataView class / clean_data Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="clean_data" data-type="MappedDataView">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../clean_data.html">clean_data</a> &rsaquo; <a href="../clean_data/MappedDataView.html">MappedDataView</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>MappedDataView</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>DataView
+Listens to changes on <a class="crossref" href="../clean_data/MappedDataView.html#source">source</a> and transforms (<a class="crossref" href="../clean_data/MappedDataView.html#_remap">_remap</a>) itself correspondingly.
+Clients could listen to its changes.</p>
+<pre class="source">
+class MappedDataView extends DataView {
+
+ /**
+  * Source [DataView] object this object is derived from.
+  */
+ final DataView source;
+ StreamSubscription _sourceSubscription;
+
+ /**
+  * Mapping function that maps a [DataView] to another [DataView]
+  */
+ final DataTransformFunction _mapping;
+
+ MappedDataView(DataView this.source, DataTransformFunction this._mapping) {
+   var mappedObj = this._mapping(source);
+   for (var key in mappedObj.keys) {
+     _fields[key] = mappedObj[key];
+   }
+   _sourceSubscription = source.onChange.listen((c) =&gt;_remap());
+ }
+
+ /**
+  * Re-applies the mapping transformation on this data object.
+  * TODO: Rewrite to work with synced.
+  */
+ void _remap() {
+   var mappedObj = _mapping(source);
+   Set allKeys = new Set.from(mappedObj.keys)
+                       .union(new Set.from(_fields.keys));
+   allKeys.forEach((key){
+
+     // key does not appear in the new mapping
+     if(!mappedObj.keys.contains(key)) {
+       _fields.remove(key);
+       _markRemoved(key);
+       return;
+     }
+
+     // key does not appear in the previously mapped object
+     if (!_fields.keys.contains(key)) {
+       _markAdded(key);
+     }
+
+     // key is in both objects, but the value was maybe changed
+     if (_fields[key] != mappedObj[key]) {
+         _markChanged(key, new Change(_fields[key], mappedObj[key]));
+     }
+
+     // make sure the mapped property is updated
+     _fields[key] = mappedObj[key];
+   });
+
+   // broadcast the changes if needed. Anyway, clear them before leaving.
+   _notify();
+ }
+
+ void dispose() {
+   _sourceSubscription.cancel();
+ }
+}
+</pre>
+</div>
+<h3>Extends</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../clean_data/DataView.html">DataView</a></span>&nbsp;&gt;&nbsp;<span class="type-box"><span class="icon-class"></span><strong>MappedDataView</strong></span></p>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="">
+<button class="show-code">Code</button>
+new <strong>MappedDataView</strong>(<a href="../clean_data/DataView.html">DataView</a> source, <a href="../clean_data/DataTransformFunction.html">DataTransformFunction</a> _mapping) <a class="anchor-link" href="#"
+              title="Permalink to MappedDataView.MappedDataView">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Creates a new <a class="crossref" href="../dart_core/Object.html">Object</a> instance.</p>
+<p><a class="crossref" href="../dart_core/Object.html">Object</a> instances have no meaningful state, and are only useful
+through their identity. An <a class="crossref" href="../dart_core/Object.html">Object</a> instance is equal to itself
+only.</p>
+<div class="docs-inherited-from">docs inherited from <a href="http://api.dartlang.org/dart_core/Object.html">Object</a> </div></div>
+<pre class="source">
+MappedDataView(DataView this.source, DataTransformFunction this._mapping) {
+ var mappedObj = this._mapping(source);
+ for (var key in mappedObj.keys) {
+   _fields[key] = mappedObj[key];
+ }
+ _sourceSubscription = source.onChange.listen((c) =&gt;_remap());
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field inherited"><h4 id="isEmpty">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isEmpty</strong> <a class="anchor-link"
+            href="#isEmpty"
+            title="Permalink to MappedDataView.isEmpty">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../clean_data/DataView.html">DataView</a> </div><div class="doc">
+<p>Returns true if there is no {key, value} pair in the data object.</p>
+<pre class="source">
+bool get isEmpty {
+ return _fields.isEmpty;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="isNotEmpty">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isNotEmpty</strong> <a class="anchor-link"
+            href="#isNotEmpty"
+            title="Permalink to MappedDataView.isNotEmpty">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../clean_data/DataView.html">DataView</a> </div><div class="doc">
+<p>Returns true if there is at least one {key, value} pair in the data object.</p>
+<pre class="source">
+bool get isNotEmpty {
+ return _fields.isNotEmpty;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="keys">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>         <strong>keys</strong> <a class="anchor-link"
+            href="#keys"
+            title="Permalink to MappedDataView.keys">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../clean_data/DataView.html">DataView</a> </div><div class="doc">
+<p>The keys of data object.</p>
+<pre class="source">
+Iterable get keys {
+ return _fields.keys;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="length">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>length</strong> <a class="anchor-link"
+            href="#length"
+            title="Permalink to MappedDataView.length">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../clean_data/DataView.html">DataView</a> </div><div class="doc">
+<p>The number of {key, value} pairs in the <a class="crossref" href="../clean_data/Data.html">Data</a>.</p>
+<pre class="source">
+int get length {
+ return _fields.length;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="onBeforeAdd">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_async/Stream.html">Stream</a>&lt;dynamic&gt;         <strong>onBeforeAdd</strong> <a class="anchor-link"
+            href="#onBeforeAdd"
+            title="Permalink to MappedDataView.onBeforeAdd">#</a>
+        </h4>
+        <div class="inherited-from">mixed in from <a href="../clean_data/ChangeNotificationsMixin.html">ChangeNotificationsMixin</a> </div><div class="doc">
+<p>Stream populated with <a class="crossref" href="../clean_data/DataView.html">DataView</a> events before any
+data object is added.</p>
+<pre class="source">
+Stream&lt;dynamic&gt; get onBeforeAdd =&gt; _onBeforeAddedController.stream;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="onBeforeRemove">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_async/Stream.html">Stream</a>&lt;dynamic&gt;         <strong>onBeforeRemove</strong> <a class="anchor-link"
+            href="#onBeforeRemove"
+            title="Permalink to MappedDataView.onBeforeRemove">#</a>
+        </h4>
+        <div class="inherited-from">mixed in from <a href="../clean_data/ChangeNotificationsMixin.html">ChangeNotificationsMixin</a> </div><div class="doc">
+<p>Stream populated with <a class="crossref" href="../clean_data/DataView.html">DataView</a> events before any
+data object is removed.</p>
+<pre class="source">
+Stream&lt;dynamic&gt; get onBeforeRemove =&gt; _onBeforeRemovedController.stream;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="onChange">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_async/Stream.html">Stream</a>&lt;<a href="../clean_data/ChangeSet.html">ChangeSet</a>&gt;         <strong>onChange</strong> <a class="anchor-link"
+            href="#onChange"
+            title="Permalink to MappedDataView.onChange">#</a>
+        </h4>
+        <div class="inherited-from">mixed in from <a href="../clean_data/ChangeNotificationsMixin.html">ChangeNotificationsMixin</a> </div><div class="doc">
+<p>Stream populated with <a class="crossref" href="../clean_data/ChangeSet.html">ChangeSet</a> events whenever the collection or any
+of data object contained gets changed.</p>
+<pre class="source">
+Stream&lt;ChangeSet&gt; get onChange =&gt; _onChangeController.stream;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="onChangeSync">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_async/Stream.html">Stream</a>&lt;<a href="http://api.dartlang.org/dart_core/Map.html">Map</a>&gt;         <strong>onChangeSync</strong> <a class="anchor-link"
+            href="#onChangeSync"
+            title="Permalink to MappedDataView.onChangeSync">#</a>
+        </h4>
+        <div class="inherited-from">mixed in from <a href="../clean_data/ChangeNotificationsMixin.html">ChangeNotificationsMixin</a> </div><div class="doc">
+<p>Stream populated with {'change': <a class="crossref" href="../clean_data/ChangeSet.html">ChangeSet</a>, 'author': <code>dynamic</code>} events
+synchronously at the moment when the collection or any data object contained
+gets changed.</p>
+<pre class="source">
+Stream&lt;Map&gt; get onChangeSync =&gt; _onChangeSyncController.stream;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="source">
+<button class="show-code">Code</button>
+final <a href="../clean_data/DataView.html">DataView</a>         <strong>source</strong> <a class="anchor-link"
+            href="#source"
+            title="Permalink to MappedDataView.source">#</a>
+        </h4>
+        <div class="doc">
+<p>Source <a class="crossref" href="../clean_data/DataView.html">DataView</a> object this object is derived from.</p>
+<pre class="source">
+final DataView source
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="values">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>         <strong>values</strong> <a class="anchor-link"
+            href="#values"
+            title="Permalink to MappedDataView.values">#</a>
+        </h4>
+        <div class="inherited-from">inherited from <a href="../clean_data/DataView.html">DataView</a> </div><div class="doc">
+<p>The values of <a class="crossref" href="../clean_data/Data.html">Data</a>.</p>
+<pre class="source">
+Iterable get values {
+ return _fields.values;
+}
+</pre>
+</div>
+</div>
+</div>
+<div class="inherited">
+<h3>Operators</h3>
+<div class="method inherited"><h4 id="[]">
+<button class="show-code">Code</button>
+dynamic <strong>operator []</strong>(key) <a class="anchor-link" href="#[]"
+              title="Permalink to MappedDataView.operator []">#</a></h4>
+<div class="inherited-from">inherited from <a href="../clean_data/DataView.html">DataView</a> </div><div class="doc">
+<p>Returns the value for the given key or null if key is not in the data object.
+Because null values are supported, one should use containsKey to
+distinguish between an absent key and a null value.</p>
+<pre class="source">
+dynamic operator[](key) =&gt; _fields[key];
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method inherited"><h4 id="containsKey">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>containsKey</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> key) <a class="anchor-link" href="#containsKey"
+              title="Permalink to MappedDataView.containsKey">#</a></h4>
+<div class="inherited-from">inherited from <a href="../clean_data/DataView.html">DataView</a> </div><div class="doc">
+<p>Returns whether this data object contains the given 
+<span class="param">key</span>.</p>
+<pre class="source">
+bool containsKey(String key) {
+ return _fields.containsKey(key);
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="containsValue">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>containsValue</strong>(<a href="http://api.dartlang.org/dart_core/Object.html">Object</a> value) <a class="anchor-link" href="#containsValue"
+              title="Permalink to MappedDataView.containsValue">#</a></h4>
+<div class="inherited-from">inherited from <a href="../clean_data/DataView.html">DataView</a> </div><div class="doc">
+<pre class="source">
+bool containsValue(Object value) {
+ return _fields.containsValue(value);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="dispose">
+<button class="show-code">Code</button>
+void <strong>dispose</strong>() <a class="anchor-link" href="#dispose"
+              title="Permalink to MappedDataView.dispose">#</a></h4>
+<div class="doc">
+<div class="inherited">
+<p>Should release all allocated (referenced) resources as subscribtions.</p>
+<div class="docs-inherited-from">docs inherited from <a href="../clean_data/DataView.html">DataView</a> </div></div>
+<pre class="source">
+void dispose() {
+ _sourceSubscription.cancel();
+}
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toJson">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Map.html">Map</a> <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to MappedDataView.toJson">#</a></h4>
+<div class="inherited-from">inherited from <a href="../clean_data/DataView.html">DataView</a> </div><div class="doc">
+<p>Converts to Map.</p>
+<pre class="source">
+Map toJson() =&gt; new Map.from(_fields);
+</pre>
+</div>
+</div>
+<div class="method inherited"><h4 id="toString">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to MappedDataView.toString">#</a></h4>
+<div class="inherited-from">inherited from <a href="../clean_data/DataView.html">DataView</a> </div><div class="doc">
+<p>Returns Json representation of the object.</p>
+<pre class="source">
+String toString() =&gt; toJson().toString();
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

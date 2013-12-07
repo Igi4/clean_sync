@@ -1,0 +1,330 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>DataView abstract class / clean_data Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="clean_data" data-type="DataView">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../clean_data.html">clean_data</a> &rsaquo; <a href="../clean_data/DataView.html">DataView</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>DataView</strong>
+          abstract class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+abstract class DataView extends Object with ChangeNotificationsMixin {
+
+ final Map _fields = new Map();
+ /**
+  * Returns the value for the given key or null if key is not in the data object.
+  * Because null values are supported, one should use containsKey to
+  * distinguish between an absent key and a null value.
+  */
+ dynamic operator[](key) =&gt; _fields[key];
+
+ /**
+  * Returns true if there is no {key, value} pair in the data object.
+  */
+ bool get isEmpty {
+   return _fields.isEmpty;
+ }
+
+ /**
+  * Returns true if there is at least one {key, value} pair in the data object.
+  */
+ bool get isNotEmpty {
+   return _fields.isNotEmpty;
+ }
+
+ /**
+  * The keys of data object.
+  */
+ Iterable get keys {
+   return _fields.keys;
+ }
+ /**
+  * The values of [Data].
+  */
+ Iterable get values {
+   return _fields.values;
+ }
+
+ /**
+  * The number of {key, value} pairs in the [Data].
+  */
+ int get length {
+   return _fields.length;
+ }
+
+ /**
+  * Returns whether this data object contains the given [key].
+  */
+ bool containsKey(String key) {
+   return _fields.containsKey(key);
+ }
+
+ bool containsValue(Object value) {
+   return _fields.containsValue(value);
+ }
+ /**
+  * Converts to Map.
+  */
+ Map toJson() =&gt; new Map.from(_fields);
+
+ /**
+  * Returns Json representation of the object.
+  */
+ String toString() =&gt; toJson().toString();
+
+ /**
+  * Should release all allocated (referenced) resources as subscribtions.
+  */
+ void dispose();
+}
+</pre>
+</div>
+<h3>Subclasses</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../clean_data/MappedDataView.html">MappedDataView</a></span></p>
+<h3>Mixins</h3>
+<p>
+<span class="type-box"><span class="icon-class"></span><a href="../clean_data/ChangeNotificationsMixin.html">ChangeNotificationsMixin</a></span></p>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="isEmpty">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isEmpty</strong> <a class="anchor-link"
+            href="#isEmpty"
+            title="Permalink to DataView.isEmpty">#</a>
+        </h4>
+        <div class="doc">
+<p>Returns true if there is no {key, value} pair in the data object.</p>
+<pre class="source">
+bool get isEmpty {
+ return _fields.isEmpty;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="isNotEmpty">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/bool.html">bool</a>         <strong>isNotEmpty</strong> <a class="anchor-link"
+            href="#isNotEmpty"
+            title="Permalink to DataView.isNotEmpty">#</a>
+        </h4>
+        <div class="doc">
+<p>Returns true if there is at least one {key, value} pair in the data object.</p>
+<pre class="source">
+bool get isNotEmpty {
+ return _fields.isNotEmpty;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="keys">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>         <strong>keys</strong> <a class="anchor-link"
+            href="#keys"
+            title="Permalink to DataView.keys">#</a>
+        </h4>
+        <div class="doc">
+<p>The keys of data object.</p>
+<pre class="source">
+Iterable get keys {
+ return _fields.keys;
+}
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="length">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>length</strong> <a class="anchor-link"
+            href="#length"
+            title="Permalink to DataView.length">#</a>
+        </h4>
+        <div class="doc">
+<p>The number of {key, value} pairs in the <a class="crossref" href="../clean_data/Data.html">Data</a>.</p>
+<pre class="source">
+int get length {
+ return _fields.length;
+}
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="onBeforeAdd">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_async/Stream.html">Stream</a>&lt;dynamic&gt;         <strong>onBeforeAdd</strong> <a class="anchor-link"
+            href="#onBeforeAdd"
+            title="Permalink to DataView.onBeforeAdd">#</a>
+        </h4>
+        <div class="inherited-from">mixed in from <a href="../clean_data/ChangeNotificationsMixin.html">ChangeNotificationsMixin</a> </div><div class="doc">
+<p>Stream populated with <a class="crossref" href="../clean_data/DataView.html">DataView</a> events before any
+data object is added.</p>
+<pre class="source">
+Stream&lt;dynamic&gt; get onBeforeAdd =&gt; _onBeforeAddedController.stream;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="onBeforeRemove">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_async/Stream.html">Stream</a>&lt;dynamic&gt;         <strong>onBeforeRemove</strong> <a class="anchor-link"
+            href="#onBeforeRemove"
+            title="Permalink to DataView.onBeforeRemove">#</a>
+        </h4>
+        <div class="inherited-from">mixed in from <a href="../clean_data/ChangeNotificationsMixin.html">ChangeNotificationsMixin</a> </div><div class="doc">
+<p>Stream populated with <a class="crossref" href="../clean_data/DataView.html">DataView</a> events before any
+data object is removed.</p>
+<pre class="source">
+Stream&lt;dynamic&gt; get onBeforeRemove =&gt; _onBeforeRemovedController.stream;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="onChange">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_async/Stream.html">Stream</a>&lt;<a href="../clean_data/ChangeSet.html">ChangeSet</a>&gt;         <strong>onChange</strong> <a class="anchor-link"
+            href="#onChange"
+            title="Permalink to DataView.onChange">#</a>
+        </h4>
+        <div class="inherited-from">mixed in from <a href="../clean_data/ChangeNotificationsMixin.html">ChangeNotificationsMixin</a> </div><div class="doc">
+<p>Stream populated with <a class="crossref" href="../clean_data/ChangeSet.html">ChangeSet</a> events whenever the collection or any
+of data object contained gets changed.</p>
+<pre class="source">
+Stream&lt;ChangeSet&gt; get onChange =&gt; _onChangeController.stream;
+</pre>
+</div>
+</div>
+<div class="field inherited"><h4 id="onChangeSync">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_async/Stream.html">Stream</a>&lt;<a href="http://api.dartlang.org/dart_core/Map.html">Map</a>&gt;         <strong>onChangeSync</strong> <a class="anchor-link"
+            href="#onChangeSync"
+            title="Permalink to DataView.onChangeSync">#</a>
+        </h4>
+        <div class="inherited-from">mixed in from <a href="../clean_data/ChangeNotificationsMixin.html">ChangeNotificationsMixin</a> </div><div class="doc">
+<p>Stream populated with {'change': <a class="crossref" href="../clean_data/ChangeSet.html">ChangeSet</a>, 'author': <code>dynamic</code>} events
+synchronously at the moment when the collection or any data object contained
+gets changed.</p>
+<pre class="source">
+Stream&lt;Map&gt; get onChangeSync =&gt; _onChangeSyncController.stream;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="values">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_core/Iterable.html">Iterable</a>         <strong>values</strong> <a class="anchor-link"
+            href="#values"
+            title="Permalink to DataView.values">#</a>
+        </h4>
+        <div class="doc">
+<p>The values of <a class="crossref" href="../clean_data/Data.html">Data</a>.</p>
+<pre class="source">
+Iterable get values {
+ return _fields.values;
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Operators</h3>
+<div class="method"><h4 id="[]">
+<button class="show-code">Code</button>
+dynamic <strong>operator []</strong>(key) <a class="anchor-link" href="#[]"
+              title="Permalink to DataView.operator []">#</a></h4>
+<div class="doc">
+<p>Returns the value for the given key or null if key is not in the data object.
+Because null values are supported, one should use containsKey to
+distinguish between an absent key and a null value.</p>
+<pre class="source">
+dynamic operator[](key) =&gt; _fields[key];
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="containsKey">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>containsKey</strong>(<a href="http://api.dartlang.org/dart_core/String.html">String</a> key) <a class="anchor-link" href="#containsKey"
+              title="Permalink to DataView.containsKey">#</a></h4>
+<div class="doc">
+<p>Returns whether this data object contains the given 
+<span class="param">key</span>.</p>
+<pre class="source">
+bool containsKey(String key) {
+ return _fields.containsKey(key);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="containsValue">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/bool.html">bool</a> <strong>containsValue</strong>(<a href="http://api.dartlang.org/dart_core/Object.html">Object</a> value) <a class="anchor-link" href="#containsValue"
+              title="Permalink to DataView.containsValue">#</a></h4>
+<div class="doc">
+<pre class="source">
+bool containsValue(Object value) {
+ return _fields.containsValue(value);
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="dispose">
+abstract void <strong>dispose</strong>() <a class="anchor-link" href="#dispose"
+              title="Permalink to DataView.dispose">#</a></h4>
+<div class="doc">
+<p>Should release all allocated (referenced) resources as subscribtions.</p>
+</div>
+</div>
+<div class="method"><h4 id="toJson">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/Map.html">Map</a> <strong>toJson</strong>() <a class="anchor-link" href="#toJson"
+              title="Permalink to DataView.toJson">#</a></h4>
+<div class="doc">
+<p>Converts to Map.</p>
+<pre class="source">
+Map toJson() =&gt; new Map.from(_fields);
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="toString">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/String.html">String</a> <strong>toString</strong>() <a class="anchor-link" href="#toString"
+              title="Permalink to DataView.toString">#</a></h4>
+<div class="doc">
+<p>Returns Json representation of the object.</p>
+<pre class="source">
+String toString() =&gt; toJson().toString();
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

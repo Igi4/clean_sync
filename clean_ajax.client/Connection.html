@@ -1,0 +1,164 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>Connection class / clean_ajax.client Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="clean_ajax.client" data-type="Connection">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../clean_ajax.client.html">clean_ajax.client</a> &rsaquo; <a href="../clean_ajax.client/Connection.html">Connection</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>Connection</strong>
+          class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<p>Abstract representation of connection to server.</p>
+<pre class="source">
+class Connection {
+
+ final Transport _transport;
+
+ /**
+  * Creates a new [Connection].
+  */
+ Connection.config(this._transport) {
+   this._transport.setHandlers(_prepareRequest, _handleResponse);
+ }
+
+ /**
+  * Queue of unprepared [ClientRequest]s.
+  * The map entry should contain these keys and values:
+  *   'createRequest': [CreateRequest] object
+  *   'completer': [Completer] object which returns response for the request
+  */
+ final Queue&lt;Map&gt; _requestQueue = new Queue&lt;Map&gt;();
+
+ /**
+  * Maps [Request] names to their future responses.
+  */
+ final Map&lt;int, Completer&gt; _responseMap = new Map&lt;int, Completer&gt;();
+
+ /**
+  * Counts sent requests. Serves as unique ID for new requests.
+  */
+ int requestCount = 0;
+
+ List&lt;PackedRequest&gt; _prepareRequest() {
+   var request_list = [];
+   while (!_requestQueue.isEmpty) {
+     var map = _requestQueue.removeFirst();
+     var clientRequest = map['createRequest'](); // create the request
+     request_list.add(new PackedRequest(requestCount, clientRequest));
+     _responseMap[requestCount++] = map['completer'];
+   }
+   return request_list;
+ }
+
+ void _handleResponse(List responses) {
+   for (var responseMap in responses) {
+     var id = responseMap['id'];
+     var response = responseMap['response'];
+     if (_responseMap.containsKey(id)) {
+       _responseMap[id].complete(response);
+       _responseMap.remove(id);
+     }
+   }
+   _responseMap.forEach((id, request) {
+     throw new Exception("Request $id was not answered!");
+   });
+ }
+
+ /**
+  * Puts the Unprepared Request to queue.
+  * Returns Future object that completes when the request receives response.
+  */
+ Future sendRequest(CreateRequest createRequest) {
+   var completer = new Completer();
+   _requestQueue.add({'createRequest': createRequest, 'completer': completer});
+   _transport.markDirty();
+   return completer.future;
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Constructors</h3>
+<div class="method"><h4 id="config">
+<button class="show-code">Code</button>
+new <strong>Connection.config</strong>(<a href="../clean_ajax.client/Transport.html">Transport</a> _transport) <a class="anchor-link" href="#config"
+              title="Permalink to Connection.Connection.config">#</a></h4>
+<div class="doc">
+<p>Creates a new <a class="crossref" href="../clean_ajax.client/Connection.html">Connection</a>.</p>
+<pre class="source">
+Connection.config(this._transport) {
+ this._transport.setHandlers(_prepareRequest, _handleResponse);
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="requestCount">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_core/int.html">int</a>         <strong>requestCount</strong> <a class="anchor-link"
+            href="#requestCount"
+            title="Permalink to Connection.requestCount">#</a>
+        </h4>
+        <div class="doc">
+<p>Counts sent requests. Serves as unique ID for new requests.</p>
+<pre class="source">
+int requestCount = 0
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Methods</h3>
+<div class="method"><h4 id="sendRequest">
+<button class="show-code">Code</button>
+<a href="http://api.dartlang.org/dart_async/Future.html">Future</a> <strong>sendRequest</strong>(<a href="../clean_ajax.client/CreateRequest.html">CreateRequest</a> createRequest) <a class="anchor-link" href="#sendRequest"
+              title="Permalink to Connection.sendRequest">#</a></h4>
+<div class="doc">
+<p>Puts the Unprepared Request to queue.
+Returns Future object that completes when the request receives response.</p>
+<pre class="source">
+Future sendRequest(CreateRequest createRequest) {
+ var completer = new Completer();
+ _requestQueue.add({'createRequest': createRequest, 'completer': completer});
+ _transport.markDirty();
+ return completer.future;
+}
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

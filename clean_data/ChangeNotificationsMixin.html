@@ -1,0 +1,212 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>ChangeNotificationsMixin abstract class / clean_data Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="../styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="../favicon.ico">
+        
+        </head>
+        <body data-library="clean_data" data-type="ChangeNotificationsMixin">
+        <div class="page">
+        <div class="header">
+          <a href="../index.html"><div class="logo"></div></a>
+          <a href="../index.html">Dart Documentation</a>
+         &rsaquo; <a href="../clean_data.html">clean_data</a> &rsaquo; <a href="../clean_data/ChangeNotificationsMixin.html">ChangeNotificationsMixin</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+        <h2><strong>ChangeNotificationsMixin</strong>
+          abstract class
+        </h2>
+        
+<button id="show-inherited" class="show-inherited">Hide inherited</button>
+<div class="doc">
+<pre class="source">
+abstract class ChangeNotificationsMixin {
+ /**
+  * Holds pending changes.
+  */
+ ChangeSet _changeSet = new ChangeSet();
+ ChangeSet _changeSetSync = new ChangeSet();
+
+ /**
+  * Controlls notification streams. Used to propagate change events to the outside world.
+  */
+ final StreamController&lt;ChangeSet&gt; _onChangeController =
+     new StreamController.broadcast();
+
+ final StreamController&lt;Map&gt; _onChangeSyncController =
+     new StreamController.broadcast(sync: true);
+
+ /**
+  * Stream populated with [ChangeSet] events whenever the collection or any
+  * of data object contained gets changed.
+  */
+ Stream&lt;ChangeSet&gt; get onChange =&gt; _onChangeController.stream;
+
+ /**
+  * Stream populated with {'change': [ChangeSet], 'author': [dynamic]} events
+  * synchronously at the moment when the collection or any data object contained
+  * gets changed.
+  */
+ Stream&lt;Map&gt; get onChangeSync =&gt; _onChangeSyncController.stream;
+
+
+ /**
+  * Used to propagate change events to the outside world.
+  */
+
+ final StreamController&lt;dynamic&gt; _onBeforeAddedController =
+     new StreamController.broadcast(sync: true);
+ final StreamController&lt;dynamic&gt; _onBeforeRemovedController =
+     new StreamController.broadcast(sync: true);
+
+ /**
+  * Stream populated with [DataView] events before any
+  * data object is added.
+  */
+  Stream&lt;dynamic&gt; get onBeforeAdd =&gt; _onBeforeAddedController.stream;
+
+ /**
+  * Stream populated with [DataView] events before any
+  * data object is removed.
+  */
+  Stream&lt;dynamic&gt; get onBeforeRemove =&gt; _onBeforeRemovedController.stream;
+
+ //======= changeSet manipulators =======
+
+ _clearChanges() {
+   _changeSet = new ChangeSet();
+ }
+
+ _clearChangesSync() {
+   _changeSetSync = new ChangeSet();
+ }
+
+ _markAdded(dynamic key) {
+   _onBeforeAddedController.add(key);
+
+   _changeSetSync.markAdded(key);
+   _changeSet.markAdded(key);
+ }
+
+ _markRemoved(dynamic key) {
+   _onBeforeRemovedController.add(key);
+
+   _changeSet.markRemoved(key);
+   _changeSetSync.markRemoved(key);
+ }
+
+ _markChanged(dynamic key, dynamic change) {
+   _changeSet.markChanged(key, change);
+   _changeSetSync.markChanged(key, change);
+ }
+
+ //======= /changeSet manipulators =======
+
+ /**
+  * Streams all new changes marked in [changeSet].
+  */
+ void _onBeforeNotify() {}
+
+ void _notify({author: null}) {
+   if (!_changeSetSync.isEmpty) {
+     _onChangeSyncController.add({'author': author, 'change': _changeSetSync});
+     _clearChangesSync();
+   }
+
+   Timer.run(() {
+     if (!_changeSet.isEmpty) {
+       _changeSet.prettify();
+       _onBeforeNotify();
+
+       if (!_changeSet.isEmpty) {
+         _onChangeController.add(_changeSet);
+         _clearChanges();
+       }
+     }
+   });
+ }
+}
+</pre>
+</div>
+<div>
+<h3>Properties</h3>
+<div class="field"><h4 id="onBeforeAdd">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_async/Stream.html">Stream</a>&lt;dynamic&gt;         <strong>onBeforeAdd</strong> <a class="anchor-link"
+            href="#onBeforeAdd"
+            title="Permalink to ChangeNotificationsMixin.onBeforeAdd">#</a>
+        </h4>
+        <div class="doc">
+<p>Stream populated with <a class="crossref" href="../clean_data/DataView.html">DataView</a> events before any
+data object is added.</p>
+<pre class="source">
+Stream&lt;dynamic&gt; get onBeforeAdd =&gt; _onBeforeAddedController.stream;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="onBeforeRemove">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_async/Stream.html">Stream</a>&lt;dynamic&gt;         <strong>onBeforeRemove</strong> <a class="anchor-link"
+            href="#onBeforeRemove"
+            title="Permalink to ChangeNotificationsMixin.onBeforeRemove">#</a>
+        </h4>
+        <div class="doc">
+<p>Stream populated with <a class="crossref" href="../clean_data/DataView.html">DataView</a> events before any
+data object is removed.</p>
+<pre class="source">
+Stream&lt;dynamic&gt; get onBeforeRemove =&gt; _onBeforeRemovedController.stream;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="onChange">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_async/Stream.html">Stream</a>&lt;<a href="../clean_data/ChangeSet.html">ChangeSet</a>&gt;         <strong>onChange</strong> <a class="anchor-link"
+            href="#onChange"
+            title="Permalink to ChangeNotificationsMixin.onChange">#</a>
+        </h4>
+        <div class="doc">
+<p>Stream populated with <a class="crossref" href="../clean_data/ChangeSet.html">ChangeSet</a> events whenever the collection or any
+of data object contained gets changed.</p>
+<pre class="source">
+Stream&lt;ChangeSet&gt; get onChange =&gt; _onChangeController.stream;
+</pre>
+</div>
+</div>
+<div class="field"><h4 id="onChangeSync">
+<button class="show-code">Code</button>
+final <a href="http://api.dartlang.org/dart_async/Stream.html">Stream</a>&lt;<a href="http://api.dartlang.org/dart_core/Map.html">Map</a>&gt;         <strong>onChangeSync</strong> <a class="anchor-link"
+            href="#onChangeSync"
+            title="Permalink to ChangeNotificationsMixin.onChangeSync">#</a>
+        </h4>
+        <div class="doc">
+<p>Stream populated with {'change': <a class="crossref" href="../clean_data/ChangeSet.html">ChangeSet</a>, 'author': <code>dynamic</code>} events
+synchronously at the moment when the collection or any data object contained
+gets changed.</p>
+<pre class="source">
+Stream&lt;Map&gt; get onChangeSync =&gt; _onChangeSyncController.stream;
+</pre>
+</div>
+</div>
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <script async src="../client-live-nav.js"></script>
+        </body></html>
+        

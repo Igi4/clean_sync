@@ -1,0 +1,130 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>clean_sync.client Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="favicon.ico">
+        
+        </head>
+        <body data-library="clean_sync.client">
+        <div class="page">
+        <div class="header">
+          <a href="index.html"><div class="logo"></div></a>
+          <a href="index.html">Dart Documentation</a>
+         &rsaquo; <a href="clean_sync.client.html">clean_sync.client</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+<h2><strong>clean_sync.client</strong> library</h2>
+<div class="doc"><p>A library for data subscription and synchronization in single page
+applications.</p></div>
+<div>
+<h3>Functions</h3>
+<div class="method"><h4 id="handleDiff">
+<button class="show-code">Code</button>
+void <strong>handleDiff</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/Map.html">Map</a>&gt; diff, <a href="clean_data/DataCollection.html">DataCollection</a> collection, <a href="http://api.dartlang.org/dart_core/String.html">String</a> author) <a class="anchor-link" href="#handleDiff"
+              title="Permalink to handleDiff">#</a></h4>
+<div class="doc">
+<pre class="source">
+void handleDiff(List&lt;Map&gt; diff, DataCollection collection, String author) {
+ diff.forEach((Map change) {
+   if (change["author"] != author) {
+     if (change["action"] == "add") {
+       collection.add(new Data.from(change["data"]), author: author);
+     }
+     else if (change["action"] == "change") {
+       Data record = collection.firstWhere((d) =&gt; d["_id"] == change["_id"]);
+       if (record != null) {
+         record.addAll(change["data"], author: author);
+       }
+     }
+     else if (change["action"] == "remove") {
+       Data record = collection.firstWhere((d) =&gt; d["_id"] == change["_id"],
+           orElse: ()=&gt;null);
+       if(record == null) {
+         var collectionMap = collection.toList().map((DataView d) =&gt; d.toJson());
+         throw new Exception(
+             'cannot find obj with id ${change["_id"]} in $collectionMap');
+       }
+       //TODO: can result be null?
+       if (record != null) {
+         collection.remove(record, author: author);
+       }
+     }
+   }
+   print("applying: ${change}");
+ });
+}
+</pre>
+</div>
+</div>
+<div class="method"><h4 id="handleData">
+<button class="show-code">Code</button>
+void <strong>handleData</strong>(<a href="http://api.dartlang.org/dart_core/List.html">List</a>&lt;<a href="http://api.dartlang.org/dart_core/Map.html">Map</a>&gt; data, <a href="clean_data/DataCollection.html">DataCollection</a> collection, <a href="http://api.dartlang.org/dart_core/String.html">String</a> author) <a class="anchor-link" href="#handleData"
+              title="Permalink to handleData">#</a></h4>
+<div class="doc">
+<pre class="source">
+void handleData(List&lt;Map&gt; data, DataCollection collection, String author) {
+ // TODO: use clean(author: _author instead)
+ var toDelete=[];
+ for (var d in collection) {
+   toDelete.add(d);
+ }
+ for (var d in toDelete) {
+   collection.remove(d, author: author);
+ }
+ for (Map record in data) {
+   collection.add(new Data.from(record), author : author);
+ }
+}
+</pre>
+</div>
+</div>
+</div>
+<div>
+<h3>Classes</h3>
+          <div class="type">
+          <h4>
+            <a href="clean_sync.client/Communicator.html"><strong>Communicator</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_sync.client/IdGenerator.html"><strong>IdGenerator</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_sync.client/Subscriber.html"><strong>Subscriber</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_sync.client/Subscription.html"><strong>Subscription</strong></a>
+          </h4>
+          </div>
+          
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <script async src="client-live-nav.js"></script>
+        </body></html>
+        

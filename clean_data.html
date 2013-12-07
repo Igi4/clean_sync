@@ -1,0 +1,236 @@
+        <!DOCTYPE html>
+        <html>
+        <head>
+                <meta charset="utf-8">
+        <title>clean_data Library / Dart Documentation</title>
+        <link rel="stylesheet" type="text/css"
+            href="styles.css">
+        <link href="//fonts.googleapis.com/css?family=Open+Sans:400,600,700,800" rel="stylesheet" type="text/css">
+        <link rel="shortcut icon" href="favicon.ico">
+        
+        </head>
+        <body data-library="clean_data">
+        <div class="page">
+        <div class="header">
+          <a href="index.html"><div class="logo"></div></a>
+          <a href="index.html">Dart Documentation</a>
+         &rsaquo; <a href="clean_data.html">clean_data</a>        <div id="search-box">
+          <input type="search" name="q" id="q" autocomplete="off"
+              class="search-input" placeholder="Search API">
+        </div>
+        
+      </div>
+      <div class="drop-down" id="drop-down"></div>
+      
+        <div class="nav">
+        
+</div>
+<div class="content">
+<h2><strong>clean_data</strong> library</h2>
+<div class="doc"><p>Support for automatical data synchronization among collections.</p>
+<h2>Concepts</h2><ul><li>
+<p><strong>Changes</strong>: You can easily attach listeners to all objects to detect
+  changes of their data. Changes are represented as <a class="crossref" href="clean_data/ChangeSet.html">ChangeSet</a> or <a class="crossref" href="clean_data/Change.html">Change</a>
+  instances. Changes are available through asynchronous [onChange] [Stream],
+  that does the work of grouping multiple changes that occured during
+  execution to single <a class="crossref" href="clean_data/ChangeSet.html">ChangeSet</a> fired in the next event loop.</p></li><li>
+<p><strong>Data</strong>: Data are stored using a <a class="crossref" href="dart_core/Map.html">Map</a> compatible instances of class
+  <a class="crossref" href="clean_data/Data.html">Data</a>.</p></li><li>
+<p><strong>Collection</strong>: Multiple data objects can be stored and manipulated using
+  the instance of <a class="crossref" href="clean_data/DataCollection.html">DataCollection</a> class. <a class="crossref" href="clean_data/DataCollection.html">DataCollection</a> behave similarly
+  to <a class="crossref" href="dart_core/Set.html">Set</a>, each object can be contained at most once and no order is
+  guaranteed.</p></li><li>
+<p><strong>Views</strong>: You can easily create various read-only views of your data
+  using handy methods <code>filter</code>, <code>map</code>, <code>union</code>, <code>except</code>, <code>intersect</code>. Views
+  gets automatically updated when the underlying data change to always
+  reflect actual state.</p></li></ul>
+<h2>Examples</h2>
+<p>Create simple data object and listen to its changes:</p>
+<pre><code>import 'package:clean_data/clean_data.dart';
+void main() {
+  var person = new Data.from({"name": "John"});
+  person.onChange.listen((changeSet) =&gt; print("Person has changed!"));
+
+  person['surname'] = 'Doe';
+  person['age'] = 37;
+}
+</code></pre>
+<p>The above code outputs:</p>
+<pre><code>Person has changed!
+</code></pre>
+<p>Notice that despite of two changes happened, we only one notification was
+fired.</p>
+<p>Create simple collection and listen to its changes:</p>
+<pre><code>import 'package:clean_data/clean_data.dar';
+void main() {
+  var colleagues = new DataCollection();
+  colleagues.onChange.listen((changeSet) =&gt; print("Team has changed!"));
+
+  colleagues.add(new Data.from({"name": "John"}));
+  colleagues.add(new Data.from({"name": "Peter"}));
+
+}
+</code></pre>
+<p>The above code outputs:</p>
+<pre><code>Team has changed!
+</code></pre>
+<p>Similarly to previous example, only one notification was fired.</p>
+<p>Our collection also listens to changes in its underlying data objects:</p>
+<pre><code>import 'package:clean_data/clean_data.dar';
+void main() {
+  var john = new Data.from({"name": "John"});
+  var peter = new Data.from({"name": "Peter"});
+
+  var colleagues = new DataCollection.from([john, peter]);
+  colleagues.onChange.listen((changeSet) =&gt; print("Team has changed!"));
+
+  john['surname'] = 'Doe';
+  peter['surname'] = 'Pan';
+
+}
+</code></pre>
+<p>The above code outputs:</p>
+<pre><code>Team has changed!
+</code></pre>
+<p>Again, only one notification was fired.</p></div>
+<div>
+<h3>Abstract Classes</h3>
+          <div class="type">
+          <h4>
+            <a href="clean_data/ChangeNotificationsMixin.html"><strong>ChangeNotificationsMixin</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/DataChangeListenersMixin.html"><strong>DataChangeListenersMixin&lt;T&gt;</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/DataCollectionView.html"><strong>DataCollectionView</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/DataView.html"><strong>DataView</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/FilteredCollectionBase.html"><strong>FilteredCollectionBase</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/TransformedDataCollection.html"><strong>TransformedDataCollection</strong></a>
+          </h4>
+          </div>
+          
+</div>
+<div>
+<h3>Classes</h3>
+          <div class="type">
+          <h4>
+            <a href="clean_data/Change.html"><strong>Change</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/ChangeSet.html"><strong>ChangeSet</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/Data.html"><strong>Data</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/DataCollection.html"><strong>DataCollection</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/ExceptedCollectionView.html"><strong>ExceptedCollectionView</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/FilteredCollectionView.html"><strong>FilteredCollectionView</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/HashIndex.html"><strong>HashIndex&lt;E&gt;</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/IntersectedCollectionView.html"><strong>IntersectedCollectionView</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/MappedCollectionView.html"><strong>MappedCollectionView</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/MappedDataView.html"><strong>MappedDataView</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/UnionedCollectionView.html"><strong>UnionedCollectionView</strong></a>
+          </h4>
+          </div>
+          
+</div>
+<div>
+<h3>Typedefs</h3>
+          <div class="type">
+          <h4>
+            <a href="clean_data/DataTestFunction.html"><strong>DataTestFunction</strong></a>
+          </h4>
+          </div>
+          
+          <div class="type">
+          <h4>
+            <a href="clean_data/DataTransformFunction.html"><strong>DataTransformFunction</strong></a>
+          </h4>
+          </div>
+          
+</div>
+<div>
+<h3>Exceptions</h3>
+          <div class="type">
+          <h4>
+            <a href="clean_data/NoIndexException.html"><strong>NoIndexException</strong></a>
+          </h4>
+          </div>
+          
+</div>
+        </div>
+        <div class="clear"></div>
+        </div>
+        <div class="footer">
+          
+        </div>
+        <script async src="client-live-nav.js"></script>
+        </body></html>
+        
